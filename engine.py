@@ -111,6 +111,26 @@ class Engine:
         for y, row in enumerate(figure.shape):
             for x, cell in enumerate(row):
                 if cell: self.board[figure.y + y - 1][figure.x + x] = 1
+
+    def clear_completed_rows(self) -> int:
+        '''
+        Clears completed rows from the board.
+
+        Parameters: None
+
+        Returns:
+            - an integer indicating how many rows were cleared.
+        '''
+        completed_rows = []
+
+        for y, row in enumerate(self.board):
+            if all(row): completed_rows.append(y)
+
+        for y in completed_rows:
+            del self.board[y]
+            self.board.insert(0, [0] * self.COLUMNS)
+        
+        return len(completed_rows)
                     
     def check_collision(self, figure: Figure) -> bool:
         '''
@@ -188,6 +208,9 @@ class Engine:
             if self.check_collision(tetrimino):
                 self.update_board(tetrimino)
                 tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
+
+                clear_count = self.clear_completed_rows()
+                if clear_count > 0: print(f'{clear_count} rows cleared.')
 
                 if self.game_over(tetrimino):
                     print('GAME OVER')
