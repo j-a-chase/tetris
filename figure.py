@@ -43,5 +43,15 @@ class Figure:
         '''
         self.x += dx
         self.y += dy
+    
+    def rotate(self) -> None:
+        '''
+        Rotates the figure.
+
+        Parameters: None
+
+        Returns: None
+        '''
+        self.shape = list(zip(*self.shape[::-1]))
 
 if __name__ == '__main__': assert False, "This is a class file. Please import its contents into another file."

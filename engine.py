@@ -178,6 +178,8 @@ class Engine:
                     if event.key == pygame.K_DOWN:
                         while not self.check_collision(tetrimino): tetrimino.move(0, 1)
 
+                    if event.key == pygame.K_r: tetrimino.rotate()
+
             move_timer += 1
             if move_timer >= self.move_delay:
                 tetrimino.move(0, 1)
