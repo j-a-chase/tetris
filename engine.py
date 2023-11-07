@@ -126,6 +126,22 @@ class Engine:
             for x, cell in enumerate(row):
                 if cell and (figure.y + y >= self.ROWS or self.board[figure.y + y][figure.x + x]): return True
         return False
+    
+    def game_over(self, figure: Figure) -> bool:
+        '''
+        Checks if the game is over.
+
+        Parameters:
+            - figure: A Figure object representing a Tetrimino.
+
+        Returns:
+            - a boolean value indicating if the game is over or not.
+        '''
+        for y, row in enumerate(figure.shape):
+            for x, cell in enumerate(row):
+                if cell:
+                    if figure.y + y < 0 or self.board[figure.y + y][figure.x + x]: return True
+        return False
 
     def run_game(self) -> None:
         '''
@@ -159,7 +175,8 @@ class Engine:
                     if event.key == pygame.K_LEFT:
                         if tetrimino.x > 0: tetrimino.move(-1, 0)
                     
-                    if event.key == pygame.K_DOWN: tetrimino.move(0, 1)
+                    if event.key == pygame.K_DOWN:
+                        while not self.check_collision(tetrimino): tetrimino.move(0, 1)
 
             move_timer += 1
             if move_timer >= self.move_delay:
@@ -169,6 +186,11 @@ class Engine:
             if self.check_collision(tetrimino):
                 self.update_board(tetrimino)
                 tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
+
+                if self.game_over(tetrimino):
+                    print('GAME OVER')
+                    pygame.quit()
+                    exit(0)
 
             self.window.fill(self.BG_COLOR)
             self.draw_figure(tetrimino)
