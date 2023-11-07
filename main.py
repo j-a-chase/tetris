@@ -9,9 +9,17 @@
 ######################################################################################################################################################
 
 # imports
+from engine import Engine
 
+def main() -> None:
+    '''
+    Main Function
 
-def main() -> None: pass
+    Parameters: None
+
+    Returns: None
+    '''
+    Engine()
 
 # run program
 if __name__ == '__main__': main()
