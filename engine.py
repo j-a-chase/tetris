@@ -67,18 +67,20 @@ class Engine:
 
         Returns: None
         '''
+        # draw tetriminos currently on board
+        for y, row in enumerate(self.board):
+            for x, cell in enumerate(row):
+                if cell:
+                    pygame.draw.rect(self.window, self.TEST_SHAPE_COLOR,
+                                     (self.GRID_OFFSET_X + x * self.GRID_SIZE, self.GRID_OFFSET_Y + y * self.GRID_SIZE, self.GRID_SIZE, self.GRID_SIZE))
+
+        # draw board (allows lines to appear over the tetriminos)
         for y in range(self.ROWS):
             for x in range(self.COLUMNS):
                 pygame.draw.rect(self.window,
                                  self.LINE_COLOR,
                                  (self.GRID_OFFSET_X + x * self.GRID_SIZE, self.GRID_OFFSET_Y + y * self.GRID_SIZE, self.GRID_SIZE, self.GRID_SIZE),
                                  1)
-        
-        for y, row in enumerate(self.board):
-            for x, cell in enumerate(row):
-                if cell:
-                    pygame.draw.rect(self.window, self.TEST_SHAPE_COLOR,
-                                     (self.GRID_OFFSET_X + x * self.GRID_SIZE, self.GRID_OFFSET_Y + y * self.GRID_SIZE, self.GRID_SIZE, self.GRID_SIZE))
                 
     def draw_figure(self, figure: Figure) -> None:
         '''
@@ -89,11 +91,9 @@ class Engine:
 
         Returns: None
         '''
-        color = figure.color
-        shape = figure.shape
-        for y, row in enumerate(shape):
+        for y, row in enumerate(figure.shape):
             for x, cell in enumerate(row):
-                if cell: pygame.draw.rect(self.window, color, 
+                if cell: pygame.draw.rect(self.window, figure.color, 
                                           (self.GRID_OFFSET_X + figure.x * self.GRID_SIZE + x * self.GRID_SIZE,
                                            self.GRID_OFFSET_Y + figure.y * self.GRID_SIZE + y * self.GRID_SIZE,
                                            self.GRID_SIZE,
@@ -124,8 +124,7 @@ class Engine:
         '''
         for y, row in enumerate(figure.shape):
             for x, cell in enumerate(row):
-                if cell:
-                    if figure.y + y >= self.ROWS or self.board[figure.y + y][figure.x + x]: return True
+                if cell and (figure.y + y >= self.ROWS or self.board[figure.y + y][figure.x + x]): return True
         return False
 
     def run_game(self) -> None:
@@ -172,8 +171,8 @@ class Engine:
                 tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
 
             self.window.fill(self.BG_COLOR)
-            self.draw_grid()
             self.draw_figure(tetrimino)
+            self.draw_grid()
             display.update()
 
 if __name__ == '__main__': assert False, "This is a class file. Please import its contents into another file."
