@@ -10,7 +10,7 @@
 
 # imports
 from lib import get_shape
-from typing import Tuple
+from typing import Tuple, List
 
 class Figure:
     def __init__(self, shape: str, color: Tuple[int, int, int], x: int = 3, y: int = 0) -> None:
@@ -44,14 +44,15 @@ class Figure:
         self.x += dx
         self.y += dy
     
-    def rotate(self) -> None:
+    def rotate(self) -> List[List[int]]:
         '''
         Rotates the figure.
 
         Parameters: None
 
-        Returns: None
+        Returns:
+            - A 2-D list containing the rotated figure.
         '''
-        self.shape = list(zip(*self.shape[::-1]))
+        return list(zip(*self.shape[::-1]))
 
 if __name__ == '__main__': assert False, "This is a class file. Please import its contents into another file."

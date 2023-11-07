@@ -147,6 +147,29 @@ class Engine:
                 if cell and (figure.y + y >= self.ROWS or self.board[figure.y + y][figure.x + x]): return True
         return False
     
+    def check_rotation(self, figure: Figure) -> bool:
+        '''
+        Checks to see if a rotation is possible for the current Figure.
+
+        Parameters:
+            - figure: a Figure object representing a Tetrimino.
+
+        Returns:
+            - a boolean value indicating if the Tetrimino can rotate or not.
+        '''
+        new_shape = [[0] * len(figure.shape[0]) for _ in range(len(figure.shape))]
+        for y, row in enumerate(figure.shape):
+            for x, cell in enumerate(row):
+                if cell:
+                    new_x, new_y = figure.x + x, figure.y + y
+                    if (
+                        new_x < 0
+                        or new_x >= self.COLUMNS
+                        or new_y >= self.ROWS
+                        or (new_y >= 0 and self.board[new_y][new_x])
+                    ): return False
+        return True
+    
     def game_over(self, figure: Figure) -> bool:
         '''
         Checks if the game is over.
@@ -198,7 +221,11 @@ class Engine:
                     if event.key == pygame.K_DOWN:
                         while not self.check_collision(tetrimino): tetrimino.move(0, 1)
 
-                    if event.key == pygame.K_r: tetrimino.rotate()
+                    if event.key == pygame.K_r:
+                        rotated = Figure('I', tetrimino.color, tetrimino.x, tetrimino.y)
+                        rotated.shape = tetrimino.rotate()
+                        if self.check_rotation(rotated):
+                            tetrimino = rotated
 
             move_timer += 1
             if move_timer >= self.move_delay:
