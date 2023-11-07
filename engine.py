@@ -72,6 +72,12 @@ class Engine:
                                  self.LINE_COLOR,
                                  (self.GRID_OFFSET_X + x * self.GRID_SIZE, self.GRID_OFFSET_Y + y * self.GRID_SIZE, self.GRID_SIZE, self.GRID_SIZE),
                                  1)
+        
+        for y, row in enumerate(self.board):
+            for x, cell in enumerate(row):
+                if cell:
+                    pygame.draw.rect(self.window, self.TEST_SHAPE_COLOR,
+                                     (self.GRID_OFFSET_X + x * self.GRID_SIZE, self.GRID_OFFSET_Y + y * self.GRID_SIZE, self.GRID_SIZE, self.GRID_SIZE))
                 
     def draw_figure(self, figure: Figure) -> None:
         '''
@@ -91,6 +97,40 @@ class Engine:
                                            self.GRID_OFFSET_Y + figure.y * self.GRID_SIZE + y * self.GRID_SIZE,
                                            self.GRID_SIZE,
                                            self.GRID_SIZE))
+                    
+    def update_board(self, figure: Figure) -> None:
+        '''
+        Updates the internal game board to reflect the graphical representation.
+
+        Parameters:
+            - figure: a Figure object representing a Tetrimino.
+
+        Returns: None
+        '''
+        for y, row in enumerate(figure.shape):
+            for x, cell in enumerate(row):
+                if cell: self.board[figure.y + y - 1][figure.x + x] = 1
+                    
+    def check_collision(self, figure: Figure) -> bool:
+        '''
+        Checks collision for the Tetrimino.
+
+        Parameters:
+            - figure: A Figure object representing a Tetrimino.
+
+        Returns:
+            - a boolean value indicating if the Tetrimino has collided with something
+        '''
+        for y, row in enumerate(figure.shape):
+            for x, cell in enumerate(row):
+                if cell:
+                    if (
+                        figure.y + y >= self.ROWS
+                        # or figure.x + x < 0
+                        # or figure.x + x >= self.COLUMNS
+                        or self.board[figure.y + y][figure.x + x]
+                    ): return True
+        return False
 
     def run_game(self) -> None:
         '''
@@ -124,13 +164,14 @@ class Engine:
                     if event.key == pygame.K_LEFT:
                         if tetrimino.x > 0: tetrimino.move(-1, 0)
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    print(pygame.mouse.get_pos())
-
             move_timer += 1
             if move_timer >= self.move_delay:
                 tetrimino.move(0, 1)
                 move_timer = 0
+
+            if self.check_collision(tetrimino):
+                self.update_board(tetrimino)
+                tetrimino = Figure('I', self.TEST_SHAPE_COLOR)
 
             self.window.fill(self.BG_COLOR)
             self.draw_grid()
