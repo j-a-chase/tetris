@@ -50,6 +50,7 @@ class Engine:
         self.GRID_OFFSET_Y = 50
 
         self.move_delay = 400
+        self.score = 0
 
         self.shapes_arr = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
 
@@ -237,7 +238,17 @@ class Engine:
                 tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
 
                 clear_count = self.clear_completed_rows()
-                if clear_count > 0: print(f'{clear_count} rows cleared.')
+                if clear_count > 0:
+                    print(f'{clear_count} rows cleared.')
+                    if clear_count == 1:
+                        self.score += 100
+                    elif clear_count == 2:
+                        self.score += 300
+                    elif clear_count == 3:
+                        self.score += 500
+                    else:
+                        self.score += 800
+                    print(f'Score: {self.score}')
 
                 if self.game_over(tetrimino):
                     print('GAME OVER')
