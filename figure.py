@@ -13,7 +13,7 @@ from lib import get_shape
 from typing import Tuple
 
 class Figure:
-    def __init__(self, shape: str, color: Tuple[int, int, int], x: int = 0, y: int = -1) -> None:
+    def __init__(self, shape: str, color: Tuple[int, int, int], x: int = 3, y: int = 0) -> None:
         '''
         Constructor
 
