@@ -10,10 +10,10 @@
 
 # imports
 from lib import get_shape
+from typing import Tuple
 
 class Figure:
-
-    def __init__(self, shape: str, color: str, x: int = 4, y: int = 0) -> None:
+    def __init__(self, shape: str, color: Tuple[int, int, int], x: int = 0, y: int = -1) -> None:
         '''
         Constructor
 
@@ -30,5 +30,18 @@ class Figure:
         # set default x, y coordinate values
         self.x = x
         self.y = y
+
+    def move(self, dx: int, dy: int) -> None:
+        '''
+        Moves the figure the given amount.
+
+        Parameters:
+            - dx: an integer indicating how far to move the figure in the 'x' direction
+            - dy: an integer indicating how far to move the figure in the 'y' direction
+
+        Returns: None
+        '''
+        self.x += dx
+        self.y += dy
 
 if __name__ == '__main__': assert False, "This is a class file. Please import its contents into another file."
