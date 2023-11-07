@@ -12,6 +12,7 @@
 import pygame
 from pygame import display
 from figure import Figure
+from random import choice
 
 class Engine:
     def __init__(self, width: int = 1000, height: int = 800, columns: int = 10, rows: int = 20, size: int = 30) -> None:
@@ -124,12 +125,7 @@ class Engine:
         for y, row in enumerate(figure.shape):
             for x, cell in enumerate(row):
                 if cell:
-                    if (
-                        figure.y + y >= self.ROWS
-                        # or figure.x + x < 0
-                        # or figure.x + x >= self.COLUMNS
-                        or self.board[figure.y + y][figure.x + x]
-                    ): return True
+                    if figure.y + y >= self.ROWS or self.board[figure.y + y][figure.x + x]: return True
         return False
 
     def run_game(self) -> None:
@@ -163,6 +159,8 @@ class Engine:
 
                     if event.key == pygame.K_LEFT:
                         if tetrimino.x > 0: tetrimino.move(-1, 0)
+                    
+                    if event.key == pygame.K_DOWN: tetrimino.move(0, 1)
 
             move_timer += 1
             if move_timer >= self.move_delay:
@@ -171,7 +169,7 @@ class Engine:
 
             if self.check_collision(tetrimino):
                 self.update_board(tetrimino)
-                tetrimino = Figure('I', self.TEST_SHAPE_COLOR)
+                tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
 
             self.window.fill(self.BG_COLOR)
             self.draw_grid()
