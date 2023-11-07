@@ -11,14 +11,15 @@
 # imports
 from typing import Dict, List
 
-def get_shapes() -> Dict[str, List[List[int]]]:
+def get_shape(shape: str) -> List[List[int]]:
     '''
-    Returns the 'shapes' dictionary containing the values of each shape
+    Returns the values associated with the given shape.
 
-    Parameters: None
+    Parameters:
+        - shape: a string containing the desired shape.
 
     Returns:
-        - A dictionary containing the values of various shapes
+        - A 2-D List containing the values of the given shape.
     '''
     return {
         'I': [[1,1,1,1]],
@@ -46,6 +47,6 @@ def get_shapes() -> Dict[str, List[List[int]]]:
             [1,1,0],
             [0,1,1]
         ]
-    }
+    }[shape]
 
 if __name__ == '__main__': assert False, "This is a module. Please import its contents into another file."
