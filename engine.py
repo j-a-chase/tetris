@@ -53,6 +53,10 @@ class Engine:
         self.score = 0
 
         self.shapes_arr = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
+        
+        # render fonts
+        self.score_font = pygame.font.SysFont("impact", 50)
+        self.score_text = self.score_font.render(f'{self.score}', 1, self.LINE_COLOR)
 
         # define internal representation of game board
         self.board = [[0] * columns for _ in range(rows)]
@@ -171,6 +175,18 @@ class Engine:
                     ): return False
         return True
     
+    def update_score(self, add: int) -> None:
+        '''
+        Updates the score rendering.
+
+        Parameters:
+            - add: an integer indicating how much to increment the score by.
+
+        Returns: None
+        '''
+        self.score += add
+        self.score_text = self.score_font.render(f'{self.score}', 1, self.LINE_COLOR)
+    
     def game_over(self, figure: Figure) -> bool:
         '''
         Checks if the game is over.
@@ -197,6 +213,9 @@ class Engine:
         '''
         self.window.fill(self.BG_COLOR)
         self.draw_grid()
+        self.window.blit(self.score_text, 
+                         (self.GRID_OFFSET_X + (self.GRID_SIZE * self.COLUMNS) + 300,
+                          self.GRID_OFFSET_Y + (self.GRID_SIZE * self.ROWS // 2)))
         display.update()
 
         tetrimino = Figure('I', self.TEST_SHAPE_COLOR)
@@ -241,14 +260,13 @@ class Engine:
                 if clear_count > 0:
                     print(f'{clear_count} rows cleared.')
                     if clear_count == 1:
-                        self.score += 100
+                        self.update_score(100)
                     elif clear_count == 2:
-                        self.score += 300
+                        self.update_score(300)
                     elif clear_count == 3:
-                        self.score += 500
+                        self.update_score(500)
                     else:
-                        self.score += 800
-                    print(f'Score: {self.score}')
+                        self.update_score(800)
 
                 if self.game_over(tetrimino):
                     print('GAME OVER')
@@ -258,6 +276,9 @@ class Engine:
             self.window.fill(self.BG_COLOR)
             self.draw_figure(tetrimino)
             self.draw_grid()
+            self.window.blit(self.score_text, 
+                            (self.GRID_OFFSET_X + (self.GRID_SIZE * self.COLUMNS) + 300,
+                            self.GRID_OFFSET_Y + (self.GRID_SIZE * self.ROWS // 2)))
             display.update()
 
 if __name__ == '__main__': assert False, "This is a class file. Please import its contents into another file."
