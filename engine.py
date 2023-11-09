@@ -56,6 +56,9 @@ class Engine:
         
         # render fonts
         self.score_font = pygame.font.SysFont("impact", 50)
+        self.description_font = pygame.font.SysFont('timesnewroman', 20)
+
+        # prerender score text
         self.score_text = self.score_font.render(f'{self.score}', 1, self.LINE_COLOR)
 
         # define internal representation of game board
@@ -270,8 +273,31 @@ class Engine:
 
                 if self.game_over(tetrimino):
                     print('GAME OVER')
-                    pygame.quit()
-                    exit(0)
+                    gameover_text = self.score_font.render("GAME OVER!", 1, self.LINE_COLOR)
+                    self.window.blit(gameover_text,
+                                     (self.GRID_OFFSET_X + (self.GRID_SIZE * self.COLUMNS) // 8,
+                                      self.GRID_OFFSET_Y + (self.GRID_SIZE * self.ROWS)))
+                    help_text = self.description_font.render('Press Q to quit - Press Enter to Play Again', 1, self.LINE_COLOR)
+                    self.window.blit(help_text,
+                                     (self.GRID_OFFSET_X * .9,
+                                      (self.GRID_OFFSET_Y * 2) + (self.GRID_SIZE * self.ROWS)))
+                    display.update()
+                    while True:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                exit(0)
+
+                            if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_RETURN:
+                                    self.update_score(-self.score)
+                                    self.board = [[0] * self.COLUMNS for _ in range(self.ROWS)]
+                                    self.run_game()
+
+                                if event.key == pygame.K_q:
+                                    pygame.quit()
+                                    exit(0)
+                                
 
             self.window.fill(self.BG_COLOR)
             self.draw_figure(tetrimino)
