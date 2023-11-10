@@ -13,6 +13,7 @@ import pygame
 from pygame import display
 from figure import Figure
 from random import choice
+from lib import get_shapes_arr, update_board, clear_completed_rows, check_collision, check_rotation, game_over
 
 class Engine:
     def __init__(self, width: int = 1000, height: int = 800, columns: int = 10, rows: int = 20, size: int = 30) -> None:
@@ -52,7 +53,7 @@ class Engine:
         self.move_delay = 400
         self.score = 0
 
-        self.shapes_arr = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
+        self.shapes_arr = get_shapes_arr()
         
         # render fonts
         self.score_font = pygame.font.SysFont("impact", 50)
@@ -106,77 +107,6 @@ class Engine:
                                            self.GRID_OFFSET_Y + figure.y * self.GRID_SIZE + y * self.GRID_SIZE,
                                            self.GRID_SIZE,
                                            self.GRID_SIZE))
-                    
-    def update_board(self, figure: Figure) -> None:
-        '''
-        Updates the internal game board to reflect the graphical representation.
-
-        Parameters:
-            - figure: a Figure object representing a Tetrimino.
-
-        Returns: None
-        '''
-        for y, row in enumerate(figure.shape):
-            for x, cell in enumerate(row):
-                if cell: self.board[figure.y + y - 1][figure.x + x] = 1
-
-    def clear_completed_rows(self) -> int:
-        '''
-        Clears completed rows from the board.
-
-        Parameters: None
-
-        Returns:
-            - an integer indicating how many rows were cleared.
-        '''
-        completed_rows = []
-
-        for y, row in enumerate(self.board):
-            if all(row): completed_rows.append(y)
-
-        for y in completed_rows:
-            del self.board[y]
-            self.board.insert(0, [0] * self.COLUMNS)
-        
-        return len(completed_rows)
-                    
-    def check_collision(self, figure: Figure) -> bool:
-        '''
-        Checks collision for the Tetrimino.
-
-        Parameters:
-            - figure: A Figure object representing a Tetrimino.
-
-        Returns:
-            - a boolean value indicating if the Tetrimino has collided with something
-        '''
-        for y, row in enumerate(figure.shape):
-            for x, cell in enumerate(row):
-                if cell and (figure.y + y >= self.ROWS or self.board[figure.y + y][figure.x + x]): return True
-        return False
-    
-    def check_rotation(self, figure: Figure) -> bool:
-        '''
-        Checks to see if a rotation is possible for the current Figure.
-
-        Parameters:
-            - figure: a Figure object representing a Tetrimino.
-
-        Returns:
-            - a boolean value indicating if the Tetrimino can rotate or not.
-        '''
-        new_shape = [[0] * len(figure.shape[0]) for _ in range(len(figure.shape))]
-        for y, row in enumerate(figure.shape):
-            for x, cell in enumerate(row):
-                if cell:
-                    new_x, new_y = figure.x + x, figure.y + y
-                    if (
-                        new_x < 0
-                        or new_x >= self.COLUMNS
-                        or new_y >= self.ROWS
-                        or (new_y >= 0 and self.board[new_y][new_x])
-                    ): return False
-        return True
     
     def update_score(self, add: int) -> None:
         '''
@@ -189,22 +119,6 @@ class Engine:
         '''
         self.score += add
         self.score_text = self.score_font.render(f'{self.score}', 1, self.LINE_COLOR)
-    
-    def game_over(self, figure: Figure) -> bool:
-        '''
-        Checks if the game is over.
-
-        Parameters:
-            - figure: A Figure object representing a Tetrimino.
-
-        Returns:
-            - a boolean value indicating if the game is over or not.
-        '''
-        for y, row in enumerate(figure.shape):
-            for x, cell in enumerate(row):
-                if cell:
-                    if figure.y + y < 0 or self.board[figure.y + y][figure.x + x]: return True
-        return False
 
     def run_game(self) -> None:
         '''
@@ -242,12 +156,12 @@ class Engine:
                         if tetrimino.x > 0: tetrimino.move(-1, 0)
                     
                     if event.key == pygame.K_DOWN:
-                        while not self.check_collision(tetrimino): tetrimino.move(0, 1)
+                        while not check_collision(self.board, tetrimino, self.ROWS): tetrimino.move(0, 1)
 
                     if event.key == pygame.K_r:
                         rotated = Figure('I', tetrimino.color, tetrimino.x, tetrimino.y)
                         rotated.shape = tetrimino.rotate()
-                        if self.check_rotation(rotated):
+                        if check_rotation(self.board, rotated, self.COLUMNS, self.ROWS):
                             tetrimino = rotated
 
             move_timer += 1
@@ -255,11 +169,11 @@ class Engine:
                 tetrimino.move(0, 1)
                 move_timer = 0
 
-            if self.check_collision(tetrimino):
-                self.update_board(tetrimino)
+            if check_collision(self.board, tetrimino, self.ROWS):
+                update_board(self.board, tetrimino)
                 tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
 
-                clear_count = self.clear_completed_rows()
+                clear_count = clear_completed_rows(self.board, self.COLUMNS)
                 if clear_count > 0:
                     print(f'{clear_count} rows cleared.')
                     if clear_count == 1:
@@ -271,7 +185,7 @@ class Engine:
                     else:
                         self.update_score(800)
 
-                if self.game_over(tetrimino):
+                if game_over(self.board, tetrimino):
                     print('GAME OVER')
                     gameover_text = self.score_font.render("GAME OVER!", 1, self.LINE_COLOR)
                     self.window.blit(gameover_text,

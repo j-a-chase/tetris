@@ -9,8 +9,45 @@
 ######################################################################################################################################################
 
 # imports
-from lib import get_shape
 from typing import Tuple, List
+
+def get_shape(shape: str) -> List[List[int]]:
+    '''
+    Returns the values associated with the given shape.
+
+    Parameters:
+        - shape: a string containing the desired shape.
+
+    Returns:
+        - A 2-D List containing the values of the given shape.
+    '''
+    return {
+        'I': [[1,1,1,1]],
+        'J': [
+            [0,0,1],
+            [1,1,1]
+        ],
+        'L': [
+            [1,0,0],
+            [1,1,1]
+        ],
+        'O': [
+            [1,1],
+            [1,1]
+        ],
+        'S': [
+            [0,1,1],
+            [1,1,0]
+        ],
+        'T': [
+            [0,1,0],
+            [1,1,1]
+        ],
+        'Z': [
+            [1,1,0],
+            [0,1,1]
+        ]
+    }[shape]
 
 class Figure:
     def __init__(self, shape: str, color: Tuple[int, int, int], x: int = 3, y: int = 0) -> None:
