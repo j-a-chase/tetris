@@ -14,6 +14,7 @@ from pygame import display
 from figure import Figure
 from random import choice
 from lib import get_shapes_arr, update_board, clear_completed_rows, check_collision, check_rotation, game_over
+from copy import copy
 
 class Engine:
     def __init__(self, width: int = 1000, height: int = 800, columns: int = 10, rows: int = 20, size: int = 30) -> None:
@@ -159,10 +160,9 @@ class Engine:
                         while not check_collision(self.board, tetrimino, self.ROWS): tetrimino.move(0, 1)
 
                     if event.key == pygame.K_r:
-                        rotated = Figure('I', tetrimino.color, tetrimino.x, tetrimino.y)
-                        rotated.shape = tetrimino.rotate()
-                        if check_rotation(self.board, rotated, self.COLUMNS, self.ROWS):
-                            tetrimino = rotated
+                        rotated = copy(tetrimino)
+                        rotated.rotate()
+                        if check_rotation(self.board, rotated, self.COLUMNS, self.ROWS): tetrimino.rotate()
 
             move_timer += 1
             if move_timer >= self.move_delay:

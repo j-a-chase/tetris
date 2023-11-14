@@ -90,6 +90,6 @@ class Figure:
         Returns:
             - A 2-D list containing the rotated figure.
         '''
-        return list(zip(*self.shape[::-1]))
+        self.shape = list(zip(*self.shape[::-1]))
 
 if __name__ == '__main__': assert False, "This is a class file. Please import its contents into another file."
