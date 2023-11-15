@@ -53,6 +53,7 @@ class Engine:
 
         self.move_delay = 400
         self.score = 0
+        self.bonus_threshold = 3000
 
         self.shapes_arr = get_shapes_arr()
         
@@ -138,6 +139,7 @@ class Engine:
 
         tetrimino = Figure('I', self.TEST_SHAPE_COLOR)
         move_timer = 0
+        bonus_timer = 0
         while True:
             for event in pygame.event.get():
 
@@ -165,6 +167,7 @@ class Engine:
                         if check_rotation(self.board, rotated, self.COLUMNS, self.ROWS): tetrimino.rotate()
 
             move_timer += 1
+            bonus_timer += 1
             if move_timer >= self.move_delay:
                 tetrimino.move(0, 1)
                 move_timer = 0
@@ -174,16 +177,18 @@ class Engine:
                 tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
 
                 clear_count = clear_completed_rows(self.board, self.COLUMNS)
+                time_multiplier = 1.5 if bonus_timer < self.bonus_threshold else 1
                 if clear_count > 0:
                     print(f'{clear_count} rows cleared.')
                     if clear_count == 1:
-                        self.update_score(100)
+                        self.update_score(100 * time_multiplier)
                     elif clear_count == 2:
-                        self.update_score(300)
+                        self.update_score(300 * time_multiplier)
                     elif clear_count == 3:
-                        self.update_score(500)
+                        self.update_score(500 * time_multiplier)
                     else:
-                        self.update_score(800)
+                        self.update_score(800 * time_multiplier)
+                    bonus_timer = 0
 
                 if game_over(self.board, tetrimino):
                     print('GAME OVER')
