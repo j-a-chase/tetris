@@ -76,7 +76,7 @@ def check_collision(board: List[List[int]], figure: Figure, rows: int) -> bool:
             if cell and (figure.y + y >= rows or board[figure.y + y][figure.x + x]): return True
     return False
 
-def check_rotation(board: List[List[str]], figure: Figure, col: int, rows: int) -> bool:
+def check_rotation(board: List[List[int]], figure: Figure, col: int, rows: int) -> bool:
     '''
     Checks to see if a rotation is possible for the current Figure.
 

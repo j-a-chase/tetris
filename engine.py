@@ -181,13 +181,13 @@ class Engine:
                 if clear_count > 0:
                     print(f'{clear_count} rows cleared.')
                     if clear_count == 1:
-                        self.update_score(100 * time_multiplier)
+                        self.update_score(int(100 * time_multiplier))
                     elif clear_count == 2:
-                        self.update_score(300 * time_multiplier)
+                        self.update_score(int(300 * time_multiplier))
                     elif clear_count == 3:
-                        self.update_score(500 * time_multiplier)
+                        self.update_score(int(500 * time_multiplier))
                     else:
-                        self.update_score(800 * time_multiplier)
+                        self.update_score(int(800 * time_multiplier))
                     bonus_timer = 0
 
                 if game_over(self.board, tetrimino):
