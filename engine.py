@@ -161,7 +161,7 @@ class Engine:
                     if event.key == pygame.K_DOWN:
                         while not check_collision(self.board, tetrimino, self.ROWS): tetrimino.move(0, 1)
 
-                    if event.key == pygame.K_r:
+                    if event.key == pygame.K_UP:
                         rotated = copy(tetrimino)
                         rotated.rotate()
                         if check_rotation(self.board, rotated, self.COLUMNS, self.ROWS): tetrimino.rotate()
