@@ -179,7 +179,6 @@ class Engine:
                 clear_count = clear_completed_rows(self.board, self.COLUMNS)
                 time_multiplier = 1.5 if bonus_timer < self.bonus_threshold else 1
                 if clear_count > 0:
-                    print(f'{clear_count} rows cleared.')
                     if clear_count == 1:
                         self.update_score(int(100 * time_multiplier))
                     elif clear_count == 2:
@@ -191,7 +190,6 @@ class Engine:
                     bonus_timer = 0
 
                 if game_over(self.board, tetrimino):
-                    print('GAME OVER')
                     gameover_text = self.score_font.render("GAME OVER!", 1, self.LINE_COLOR)
                     self.window.blit(gameover_text,
                                      (self.GRID_OFFSET_X + (self.GRID_SIZE * self.COLUMNS) // 8,
