@@ -174,7 +174,10 @@ class Engine:
 
             if check_collision(self.board, tetrimino, self.ROWS):
                 update_board(self.board, tetrimino)
-                tetrimino = Figure(choice(self.shapes_arr), self.TEST_SHAPE_COLOR)
+                random_choice = choice(list(range(1,10)))
+                if random_choice <= 3: random_choice = 0
+                else: random_choice -= 3
+                tetrimino = Figure(self.shapes_arr[random_choice], self.TEST_SHAPE_COLOR)
 
                 clear_count = clear_completed_rows(self.board, self.COLUMNS)
                 time_multiplier = 1.5 if bonus_timer < self.bonus_threshold else 1
